@@ -1,67 +1,59 @@
 # Counsel — Legal Matter Command
 
-> Portfolio-wide legal matter tracking with obligation management, counterparty exposure mapping, and policy-gated human review — built for in-house counsel teams.
+  > Policy-gated human review for legal matters — every recommendation evidence-backed and auditable.
 
-[![CI](https://github.com/szl-holdings/szl-holdings-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/szl-holdings/szl-holdings-platform/actions/workflows/ci.yml)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/license-Proprietary-red?style=flat-square)](../../LICENSE.md)
+  [![CI](https://github.com/szl-holdings/szl-holdings-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/szl-holdings/szl-holdings-platform/actions/workflows/ci.yml)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![License](https://img.shields.io/badge/license-Proprietary-red?style=flat-square)](../../LICENSE.md)
 
-[Live Demo](https://szlholdings.com) · [Platform Demo Video](https://szlholdings.com/szl-demo-video/) · [Investor Dashboard](https://szlholdings.com/stephen/investor) · [Architecture](../../docs/architecture/architecture.md)
+  [Live Demo](https://szlholdings.com) · [Platform Demo Video](https://szlholdings.com/szl-demo-video/) · [Investor Dashboard](https://szlholdings.com/stephen/investor) · [Architecture](../../docs/architecture/architecture.md)
 
-![Counsel — Legal Matter Command](../../.github/assets/screenshots/counsel-hero.jpg)
+  ![Counsel — Legal Matter Command](../../.github/assets/screenshots/counsel-hero.jpg)
 
----
+  ---
+  ## What it does
 
-## What it does
+  Counsel is the **legal matter command surface** — a policy-gated human review workflow for matter intake, conflict checking, document review, citation verification, and timeline reconciliation. Built on the same Ouroboros runtime + Codex decision-receipt kernel as the rest of the platform: every recommendation carries its source citations, validator outcomes, and risk tier.
 
-Counsel is the legal matter intelligence surface for the SZL Holdings platform. It tracks obligations, deadlines, counterparty exposure, and compliance events across the full portfolio — with AI-assisted risk classification and policy-mandated human review gates enforced by the Alloy Fabric.
+  ## Government alignment
 
-Every consequential legal action requires human approval through the Human Lock gate. Every disposition is recorded in the Proof Chain with full actor attribution and decision context.
+  Counsel inherits the platform's NYSTEC-audited governance posture:
 
-## Run locally
+  - **NIST AI RMF**: full coverage across GOVERN / MAP / MEASURE / MANAGE
+  - **DoD Responsible AI Tenets**: 4 of 5 covered (Equitable in 30-day roadmap)
+  - **GSA RAG source attribution**: every cited authority hashed via Katzilla primary-source feed (CourtListener, Federal Register)
+  - **Human approval at R3/R4**: high-consequence legal actions never execute without explicit human confirmation
 
-```bash
-# From the monorepo root
-pnpm install
-pnpm --filter @workspace/api-server dev   # Start the API server first
-pnpm --filter @workspace/counsel dev
-```
+  ## Run locally
 
-**Primary route:** `/counsel/`
+  ```bash
+  pnpm install
+  pnpm --filter @workspace/api-server dev
+  pnpm --filter @workspace/counsel dev
+  ```
 
-## Key modules
+  **Primary route:** `/counsel/`
 
-| Module | Route | Purpose |
-|--------|-------|---------|
-| Matter Dashboard | `/counsel/` | Active matter tracking with urgency scoring |
-| Obligation Timeline | `/counsel/obligations` | Deadline and obligation management |
-| Counterparty Map | `/counsel/counterparties` | Legal exposure by entity |
-| Compliance Center | `/counsel/compliance` | Regulatory compliance status |
-| Human Lock | `/counsel/approvals` | Policy-gated approval queue |
-| Matter Knowledge | `/counsel/knowledge` | RAG knowledge index over matter documents (BM25 retrieval, entity extraction, cited answers) |
+  ## Tech stack
 
-## Tech stack
+  React 19 + Vite 7 + TypeScript (strict) · Express 5 · PostgreSQL 16 / Drizzle ORM · Multi-provider AI · Ouroboros loop runtime (`PRF_SYSTEM_CLAIMS`) · Codex decision receipts
+  
+  ---
 
-React 19 + Vite 7 + TypeScript (strict) · Express 5 (shared API server) · PostgreSQL 16 / Drizzle ORM · Anthropic Claude (risk classification + RAG) · OIDC/PKCE auth · Proof Chain audit trail
+  **SZL Holdings** · [szlholdings.com](https://szlholdings.com) · [inquiries@szlholdings.com](mailto:inquiries@szlholdings.com)
 
-## Architecture reference
+  ---
+  ## About this repository
 
-Full system architecture: [`docs/architecture/architecture.md`](../../docs/architecture/architecture.md)
+  This is a public showcase of one product in the [SZL Holdings platform](https://github.com/szl-holdings/szl-holdings-platform) monorepo. It mirrors the README from the platform artifact directory; the canonical, version-controlled source — including the React app, tests, and infrastructure — lives in the platform repo.
 
----
+  All seven products share the same governed substrate:
 
-**SZL Holdings** · [szlholdings.com](https://szlholdings.com) · [inquiries@szlholdings.com](mailto:inquiries@szlholdings.com)
+  - **[`@workspace/ouroboros`](https://github.com/szl-holdings/ouroboros)** — bounded loops with measurable convergence, v6 ecosystem layer, government readiness module (**133/133 tests**)
+  - **[`@workspace/codex-kernel`](https://github.com/szl-holdings/szl-holdings-platform/tree/master/packages/codex-kernel)** — decision receipts, validators, replay, trace-hash verification
+  - **The Ouroboros Thesis** — [`szl-holdings/ouroboros-thesis`](https://github.com/szl-holdings/ouroboros-thesis) — architectural rationale + v6 operational contract
 
+  Government readiness audit (NYSTEC pre-briefing, 2026-04-30): [`docs/audit/szl-government-readiness.md`](https://github.com/szl-holdings/ouroboros/blob/main/docs/audit/szl-government-readiness.md)
 
----
-## About this repository
-
-This is a public showcase of one product in the [SZL Holdings platform](https://github.com/szl-holdings/szl-holdings-platform) monorepo. It mirrors the README from the platform artifact directory; the canonical, version-controlled source — including the React app, tests, and infrastructure — lives in the platform repo.
-
-All seven products share the same operational substrate:
-
-- **[`@workspace/ouroboros`](https://github.com/szl-holdings/ouroboros)** — bounded loops with measurable convergence; proof-route resolver, risk-tier escalation gate, and almanac cycle advancer.
-- **[`@workspace/codex-kernel`](https://github.com/szl-holdings/szl-holdings-platform/tree/main/packages/codex-kernel)** — decision receipts, validators, replay, and trace-hash verification.
-- **The Ouroboros Thesis v2** — [`szl-holdings/ouroboros-thesis`](https://github.com/szl-holdings/ouroboros-thesis) — the architectural rationale.
-
-© 2026 SZL Holdings. All rights reserved.
+  © 2026 SZL Holdings. All rights reserved.
+  
