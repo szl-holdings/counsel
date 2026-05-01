@@ -8,7 +8,7 @@
 
   [Live Demo](https://szlholdings.com) · [Platform Demo Video](https://szlholdings.com/szl-demo-video/) · [Investor Dashboard](https://szlholdings.com/stephen/investor) · [Architecture](../../docs/architecture/architecture.md)
 
-  ![Counsel — Legal Matter Command](https://raw.githubusercontent.com/szl-holdings/.github/main/assets/screenshots/counsel-home.jpg)
+  ![Counsel — Legal Matter Command](https://raw.githubusercontent.com/szl-holdings/szl-holdings-platform/master/.github/assets/screenshots/counsel-hero.jpg)
 
   ---
   ## What it does
