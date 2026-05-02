@@ -1,59 +1,30 @@
-# Counsel — Legal Matter Command
+# Counsel
 
-  > Policy-gated human review for legal matters — every recommendation evidence-backed and auditable.
+  > Legal matter command — design draft.
 
-  [![CI](https://github.com/szl-holdings/szl-holdings-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/szl-holdings/szl-holdings-platform/actions/workflows/ci.yml)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-  [![License](https://img.shields.io/badge/license-Proprietary-red?style=flat-square)](../../LICENSE.md)
+  ## Status
 
-  [Live Demo](https://szlholdings.com) · [Platform Demo Video](https://szlholdings.com/szl-demo-video/) · [Investor Dashboard](https://szlholdings.com/stephen/investor) · [Architecture](../../docs/architecture/architecture.md)
+  This repository is a **README-stage public placeholder** for a product in the [SZL Holdings](https://github.com/szl-holdings) portfolio. There is no live application here. The shipped, open-source piece of the SZL Holdings work is the runtime in [`@szl-holdings/ouroboros`](https://github.com/szl-holdings/ouroboros) (150 declared Vitest tests at v6.1.0), and the [Ouroboros Thesis](https://github.com/szl-holdings/ouroboros-thesis) (v3 paper, [DOI 10.5281/zenodo.19951520](https://doi.org/10.5281/zenodo.19951520)).
 
-  ![Counsel — Legal Matter Command](https://raw.githubusercontent.com/szl-holdings/szl-holdings-platform/master/.github/assets/screenshots/counsel-hero.jpg)
+  ## Intent
 
-  ---
-  ## What it does
+  Counsel is intended as a legal-matter command surface: policy-gated human review, evidence-bound recommendation, and citation-verified output through the Ouroboros runtime.
 
-  Counsel is the **legal matter command surface** — a policy-gated human review workflow for matter intake, conflict checking, document review, citation verification, and timeline reconciliation. Built on the same Ouroboros runtime + Codex decision-receipt kernel as the rest of the platform: every recommendation carries its source citations, validator outcomes, and risk tier.
+  ## What this repo is not
 
-  ## Government alignment
+  - Not a deployed product
+  - Not government-audited (the 2026-04-30 Empire APEX session with NYSTEC was procurement counseling, not an audit)
+  - Not feature-complete
+  - Not in production
 
-  Counsel inherits the platform's NYSTEC-audited governance posture:
+  Earlier copies of this README claimed government-readiness scorecards, NYSTEC audit findings, NIST AI RMF coverage, deployed routes, and a 142/142 (or 1,372/1,372) test surface across seven products. Those were aspirational. The honest state is: design draft on top of a 150-test reference runtime.
 
-  - **NIST AI RMF**: full coverage across GOVERN / MAP / MEASURE / MANAGE
-  - **DoD Responsible AI Tenets**: 4 of 5 covered (Equitable in 30-day roadmap)
-  - **GSA RAG source attribution**: every cited authority hashed via Katzilla primary-source feed (CourtListener, Federal Register)
-  - **Human approval at R3/R4**: high-consequence legal actions never execute without explicit human confirmation
+  ## License
 
-  ## Run locally
+  See [LICENSE](./LICENSE) and [NOTICE](./NOTICE).
 
-  ```bash
-  pnpm install
-  pnpm --filter @workspace/api-server dev
-  pnpm --filter @workspace/counsel dev
-  ```
+  ## Contact
 
-  **Primary route:** `/counsel/`
+  [stephenlutar2@gmail.com](mailto:stephenlutar2@gmail.com)
 
-  ## Tech stack
-
-  React 19 + Vite 7 + TypeScript (strict) · Express 5 · PostgreSQL 16 / Drizzle ORM · Multi-provider AI · Ouroboros loop runtime (`PRF_SYSTEM_CLAIMS`) · Codex decision receipts
-  
-  ---
-
-  **SZL Holdings** · [szlholdings.com](https://szlholdings.com) · [inquiries@szlholdings.com](mailto:inquiries@szlholdings.com)
-
-  ---
-  ## About this repository
-
-  This is a public showcase of one product in the [SZL Holdings platform](https://github.com/szl-holdings/szl-holdings-platform) monorepo. It mirrors the README from the platform artifact directory; the canonical, version-controlled source — including the React app, tests, and infrastructure — lives in the platform repo.
-
-  All seven products share the same governed substrate:
-
-  - **[`@workspace/ouroboros`](https://github.com/szl-holdings/ouroboros)** — bounded loops with measurable convergence, v6 ecosystem layer, government readiness module (**142/142 tests**)
-  - **[`@workspace/codex-kernel`](https://github.com/szl-holdings/szl-holdings-platform/tree/master/packages/codex-kernel)** — decision receipts, validators, replay, trace-hash verification
-  - **The Ouroboros Thesis** — [`szl-holdings/ouroboros-thesis`](https://github.com/szl-holdings/ouroboros-thesis) — architectural rationale + v6 operational contract
-
-  Government readiness audit (NYSTEC pre-briefing, 2026-04-30): [`docs/audit/szl-government-readiness.md`](https://github.com/szl-holdings/ouroboros/blob/main/docs/audit/szl-government-readiness.md)
-
-  © 2026 SZL Holdings. All rights reserved.
-  
+  © 2026 SZL Holdings.
