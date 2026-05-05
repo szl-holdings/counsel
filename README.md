@@ -2,6 +2,9 @@
 
   > Legal matter command for the SZL Holdings platform.
 
+  [![CI (platform monorepo)](https://github.com/szl-holdings/szl-holdings-platform/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/szl-holdings/szl-holdings-platform/actions/workflows/ci.yml)
+  [![License](https://img.shields.io/badge/license-Proprietary-red?style=flat-square)](./LICENSE)
+
   Counsel provides matter tracking, obligation dependency mapping, document review, and exposure management with policy-gated AI workflows and proof-chain delivery.
 
   ## Capabilities
