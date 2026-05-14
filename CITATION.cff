@@ -1,29 +1,29 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite the SZL Holdings research thesis (Ouroboros Thesis v10) and reference this component."
+message: "If you use this software, please cite it using the metadata below."
 title: "counsel — Legal matter command. Policy-gated AI workflows, document review, obligation mapping, and proof-chain delivery."
 abstract: >-
-  Legal matter command. Policy-gated AI workflows, document review, obligation mapping, and proof-chain delivery. Component of the SZL Holdings governed AI decision infrastructure,
+  Legal matter command. Policy-gated AI workflows, document review, obligation mapping, and proof-chain delivery. Part of the SZL Holdings governed AI decision infrastructure,
   built on the Ouroboros Thesis (DOI 10.5281/zenodo.19944926).
 type: software
+version: "1.0.0"
+date-released: "2026-01-01"
+license: Apache-2.0
 authors:
   - family-names: Lutar
     given-names: Stephen
-    name-particle: P.
-    affiliation: SZL Holdings
+    name-particle: "P."
+    name-suffix: "Jr."
+    affiliation: "SZL Holdings"
+    email: "stephen@szlholdings.com"
     orcid: "https://orcid.org/0009-0001-0110-4173"
-license: LicenseRef-SZL-Proprietary
 url: "https://github.com/szl-holdings/counsel"
 repository-code: "https://github.com/szl-holdings/counsel"
 keywords:
   - szl-holdings
   - ai-governance
-  - decision-intelligence
   - ouroboros-thesis
 identifiers:
-  - description: "Ouroboros Thesis v10 — research foundation (Zenodo)"
-    type: doi
-    value: "10.5281/zenodo.20053163"
-  - description: "Ouroboros Thesis concept DOI — always-latest"
+  - description: "Ouroboros Thesis — research foundation (Zenodo concept DOI)"
     type: doi
     value: "10.5281/zenodo.19944926"
   - description: "ORCID iD of the principal author"
@@ -35,8 +35,10 @@ preferred-citation:
   authors:
     - family-names: Lutar
       given-names: Stephen
-      name-particle: P.
-      affiliation: SZL Holdings
+      name-particle: "P."
+      name-suffix: "Jr."
+      affiliation: "SZL Holdings"
+      email: "stephen@szlholdings.com"
       orcid: "https://orcid.org/0009-0001-0110-4173"
   year: 2026
   url: "https://github.com/szl-holdings/counsel"
