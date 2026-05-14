@@ -67,6 +67,6 @@ Counsel is proprietary. See [LICENSE](./LICENSE) and [NOTICE](./NOTICE). The und
 
 ---
 
-**[SZL Holdings](https://szlholdings.com)** · Founder & CEO **Stephen P. Lutar Jr.** · [stephen@szlholdings.com](mailto:stephen@szlholdings.com)
+**[SZL Holdings](https://szlholdings.com)** · Founder & CEO **Stephen P. Lutar** · [stephen@szlholdings.com](mailto:stephen@szlholdings.com)
 
 © 2024–2026 SZL Holdings. All rights reserved.
