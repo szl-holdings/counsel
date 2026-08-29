@@ -1,6 +1,6 @@
 # Ayllu Counsel — Hugging Face Space. Stdlib HTTP. No Gradio.
 # Explicit COPY: the org deployer forbids bare COPY .
-FROM public.ecr.aws/docker/library/python:3.11-slim
+FROM mirror.gcr.io/library/python:3.12-slim
 
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PORT=7860
