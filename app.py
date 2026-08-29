@@ -125,8 +125,20 @@ class Handler(BaseHTTPRequestHandler):
             html = HTML.read_bytes() if HTML.exists() else b"<h1>Counsel</h1>"
             self._send(200, html, "text/html; charset=utf-8")
             return
-        if path == "/health":
-            self._send(200, b'{"ok":true,"organ":"counsel"}', "application/json")
+        if path in ("/health", "/healthz"):
+            self._send(
+                200,
+                json.dumps(
+                    {
+                        "ok": True,
+                        "organ": "counsel",
+                        "lambda_status": "Conjecture 1",
+                        "energy": None,
+                        "signer": "UNSIGNED-honest",
+                    }
+                ).encode(),
+                "application/json",
+            )
             return
         if path == "/api/docket":
             payload = {"health": pull(f"{A11OY}/healthz"), "feed": pull(f"{A11OY}/api/a11oy/v1/vert/legal/feed?limit=8"), "disclaimer": DISCLAIMER}
