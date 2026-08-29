@@ -1,2 +1,2 @@
-gradio==4.44.1
+gradio==6.15.1
 audioop-lts==0.2.1
