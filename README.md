@@ -3,10 +3,8 @@ title: Ayllu Counsel
 emoji: ⚖️
 colorFrom: gray
 colorTo: yellow
-sdk: gradio
-sdk_version: 4.44.0
-python_version: "3.11"
-app_file: app.py
+sdk: docker
+app_port: 7860
 pinned: false
 license: apache-2.0
 short_description: Legal Matter Command. SHA3 receipts. Λ = Conjecture 1.
@@ -19,6 +17,8 @@ and the live [a11oy legal vertical](https://a-11-oy.com/api/a11oy/v1/vert/legal)
 
 Sister product: [szl-holdings/ayllu](https://github.com/szl-holdings/ayllu) (eleven Quechua seats).
 Existing Space: [SZLHOLDINGS/ayllu](https://huggingface.co/spaces/SZLHOLDINGS/ayllu).
+
+Gradio was removed. It crashed the Space (`_simple_templates` / `audioop`). This organ is a stdlib HTTP hologram.
 
 ## What is live
 
