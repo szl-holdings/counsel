@@ -4,6 +4,10 @@ Continuance of retired Counsel + Ayllu eleven seats.
 Live scrapes a-11-oy.com legal vertical and SZLHOLDINGS Hub.
 grok-4.5 only when XAI_API_KEY is present. SHA3-256 UNSIGNED-honest receipts.
 Λ = Conjecture 1. SLSA L1. Not legal advice.
+
+Pinned to Gradio 4.44.1 — `gradio>=4.44.0` was resolving to Gradio 5 on the
+Space factory and crashing at import (RUNTIME_ERROR). Pin is the product, not
+a retry loop.
 """
 from __future__ import annotations
 
@@ -20,6 +24,7 @@ GENESIS = "0" * 64
 MODEL = "grok-4.5"
 A11OY = "https://a-11-oy.com"
 HF = "https://huggingface.co/api"
+UA = "SZL-Counsel/1.0 (+https://a-11-oy.com)"
 DISCLAIMER = (
     "Informational only. Does not constitute legal advice. Not a law firm. "
     "No attorney-client relationship. Λ = Conjecture 1. SLSA L1. UNSIGNED-honest."
@@ -58,7 +63,7 @@ def mint(action: str, decision: str, honesty: str, prev: str, payload: object, m
 
 
 def pull(url: str, timeout: int = 10):
-    req = urllib.request.Request(url, headers={"Accept": "application/json"})
+    req = urllib.request.Request(url, headers={"Accept": "application/json", "User-Agent": UA})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as res:
             return json.loads(res.read().decode("utf-8"))
@@ -82,7 +87,7 @@ def grok(prompt: str, system: str, max_tokens: int = 480) -> tuple[str, str]:
     req = urllib.request.Request(
         "https://api.x.ai/v1/chat/completions",
         data=body,
-        headers={"Content-Type": "application/json", "Authorization": f"Bearer {key}"},
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {key}", "User-Agent": UA},
     )
     try:
         with urllib.request.urlopen(req, timeout=45) as res:
@@ -137,5 +142,7 @@ with gr.Blocks(title="Ayllu Counsel") as demo:
         rec = gr.Code(label="Receipt")
         gr.Button("Run grok-4.5").click(run_ask, inputs=[prompt, lock, prev], outputs=[ans, rec])
 
+demo.queue()
+
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(server_name="0.0.0.0", server_port=7860, show_error=True)
