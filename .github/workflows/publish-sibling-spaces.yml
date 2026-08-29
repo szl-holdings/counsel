@@ -1,0 +1,82 @@
+# Copyright 2026 SZL Holdings — SPDX-License-Identifier: Apache-2.0
+name: publish-sibling-spaces
+on:
+  workflow_dispatch:
+    inputs:
+      repos:
+        description: Comma-separated szl-holdings repo names to mirror as Docker Spaces
+        required: false
+        default: szl-sovereign-os,szl-real-estate
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - run: pip install huggingface_hub
+      - name: Clone sibling GitHub sources
+        env:
+          REPOS: ${{ github.event.inputs.repos }}
+        run: |
+          set -euo pipefail
+          mkdir -p siblings
+          IFS=',' read -ra RS <<< "${REPOS}"
+          for r in "${RS[@]}"; do
+            r=$(echo "$r" | xargs)
+            git clone --depth 1 "https://github.com/szl-holdings/${r}.git" "siblings/${r}"
+          done
+      - name: Push sibling Docker Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_ORG_TOKEN || secrets.HF_TOKEN }}
+          REPOS: ${{ github.event.inputs.repos }}
+        run: |
+          python - <<'PY'
+          import os, sys
+          from pathlib import Path
+          token = os.environ.get("HF_TOKEN") or ""
+          if not token:
+              print("HF_TOKEN UNAVAILABLE — sibling Space publish skipped. Not fabricated LIVE.")
+              sys.exit(0)
+          from huggingface_hub import HfApi, create_repo, space_info
+          api = HfApi(token=token)
+          repos = [r.strip() for r in os.environ.get("REPOS", "").split(",") if r.strip()]
+          published = []
+          skipped = []
+          for name in repos:
+              folder = Path("siblings") / name
+              if not folder.exists():
+                  print(f"UNAVAILABLE source folder {folder}")
+                  skipped.append(name)
+                  continue
+              repo_id = f"SZLHOLDINGS/{name}"
+              create_repo(
+                  repo_id,
+                  repo_type="space",
+                  space_sdk="docker",
+                  exist_ok=True,
+                  token=token,
+                  private=False,
+              )
+              api.upload_folder(
+                  folder_path=str(folder),
+                  repo_id=repo_id,
+                  repo_type="space",
+                  ignore_patterns=[
+                      ".git*",
+                      ".github/**",
+                      "tests/*",
+                      ".venv/*",
+                      "__pycache__/*",
+                  ],
+              )
+              info = space_info(repo_id, token=token)
+              print(f"published {repo_id} sdk={getattr(info, 'sdk', None)} id={getattr(info, 'id', repo_id)}")
+              published.append(repo_id)
+          print(f"MEASURED published={published} skipped={skipped}")
+          if skipped:
+              sys.exit(1)
+          PY
