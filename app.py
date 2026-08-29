@@ -1,13 +1,8 @@
-"""Ayllu Counsel — Hugging Face Space (Gradio).
+"""Ayllu Counsel — stdlib Space. No Gradio.
 
-Continuance of retired Counsel + Ayllu eleven seats.
-Live scrapes a-11-oy.com legal vertical and SZLHOLDINGS Hub.
-grok-4.5 only when XAI_API_KEY is present. SHA3-256 UNSIGNED-honest receipts.
-Λ = Conjecture 1. SLSA L1. Not legal advice.
-
-Pinned to Gradio 4.44.1 — `gradio>=4.44.0` was resolving to Gradio 5 on the
-Space factory and crashing at import (RUNTIME_ERROR). Pin is the product, not
-a retry loop.
+Continuance of retired Counsel. Legal Matter Command.
+SHA3-256 UNSIGNED-honest receipts. Human Lock fail-closed.
+Λ = Conjecture 1. Not legal advice.
 """
 from __future__ import annotations
 
@@ -17,18 +12,22 @@ import os
 import time
 import urllib.request
 import uuid
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from urllib.parse import urlparse
 
-import gradio as gr
+from allodial import score as allodial_score
 
 GENESIS = "0" * 64
 MODEL = "grok-4.5"
 A11OY = "https://a-11-oy.com"
 HF = "https://huggingface.co/api"
-UA = "SZL-Counsel/1.0 (+https://a-11-oy.com)"
 DISCLAIMER = (
     "Informational only. Does not constitute legal advice. Not a law firm. "
     "No attorney-client relationship. Λ = Conjecture 1. SLSA L1. UNSIGNED-honest."
 )
+HTML = Path(__file__).with_name("index.html")
+PREV = {"hash": GENESIS}
 
 
 def sha3(data: bytes) -> str:
@@ -36,7 +35,7 @@ def sha3(data: bytes) -> str:
 
 
 def dump(value: object) -> bytes:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
 
 
 def mint(action: str, decision: str, honesty: str, prev: str, payload: object, model: str | None) -> dict:
@@ -59,90 +58,120 @@ def mint(action: str, decision: str, honesty: str, prev: str, payload: object, m
         "lock": "749/14/163",
     }
     body["hash"] = sha3(dump(body))
+    PREV["hash"] = body["hash"]
     return body
 
 
 def pull(url: str, timeout: int = 10):
-    req = urllib.request.Request(url, headers={"Accept": "application/json", "User-Agent": UA})
+    req = urllib.request.Request(url, headers={"Accept": "application/json", "User-Agent": "szl-counsel/1.0"})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as res:
-            return json.loads(res.read().decode("utf-8"))
+            return json.loads(res.read().decode())
     except Exception as exc:
-        return {"_unavailable": str(exc), "url": url}
+        return {"_unavailable": str(exc), "url": url, "honesty": "UNAVAILABLE"}
 
 
-def grok(prompt: str, system: str, max_tokens: int = 480) -> tuple[str, str]:
+def grok(prompt: str) -> tuple[str, str]:
     key = os.environ.get("XAI_API_KEY")
     if not key:
-        return "UNAVAILABLE — XAI_API_KEY absent", "UNAVAILABLE"
+        return "UNAVAILABLE — XAI_API_KEY absent. Fail closed.", "UNAVAILABLE"
     body = json.dumps({
         "model": MODEL,
         "messages": [
-            {"role": "system", "content": system},
+            {"role": "system", "content": DISCLAIMER + " You are Ayllu Counsel. No fabricated citations."},
             {"role": "user", "content": prompt[:6000]},
         ],
-        "max_tokens": max_tokens,
+        "max_tokens": 480,
         "temperature": 0.2,
-    }).encode("utf-8")
+    }).encode()
     req = urllib.request.Request(
         "https://api.x.ai/v1/chat/completions",
         data=body,
-        headers={"Content-Type": "application/json", "Authorization": f"Bearer {key}", "User-Agent": UA},
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {key}"},
     )
     try:
         with urllib.request.urlopen(req, timeout=45) as res:
-            data = json.loads(res.read().decode("utf-8"))
-        text = data["choices"][0]["message"]["content"]
-        return text, "CONJECTURE"
+            data = json.loads(res.read().decode())
+        return data["choices"][0]["message"]["content"], "CONJECTURE"
     except Exception as exc:
         return f"UNAVAILABLE — {exc}", "UNAVAILABLE"
 
 
-def show_docket():
-    health = pull(f"{A11OY}/healthz")
-    feed = pull(f"{A11OY}/api/a11oy/v1/vert/legal/feed?limit=8")
-    return json.dumps({"health": health, "feed": feed, "disclaimer": DISCLAIMER}, indent=2)[:12000]
+def read_json(handler: BaseHTTPRequestHandler) -> dict:
+    n = int(handler.headers.get("Content-Length") or 0)
+    raw = handler.rfile.read(n) if n else b"{}"
+    try:
+        data = json.loads(raw.decode())
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
 
 
-def show_estate():
-    models = pull(f"{HF}/models?author=SZLHOLDINGS&limit=40")
-    spaces = pull(f"{HF}/spaces?author=SZLHOLDINGS&limit=40")
-    datasets = pull(f"{HF}/datasets?author=SZLHOLDINGS&limit=30")
-    def ids(blob):
-        if isinstance(blob, list):
-            return [x.get("id") for x in blob if isinstance(x, dict)]
-        return blob
-    return json.dumps({"models": ids(models), "spaces": ids(spaces), "datasets": ids(datasets)}, indent=2)[:12000]
+class Handler(BaseHTTPRequestHandler):
+    def log_message(self, fmt: str, *args) -> None:
+        return
+
+    def _send(self, code: int, body: bytes, ctype: str) -> None:
+        self.send_response(code)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self) -> None:  # noqa: N802
+        path = urlparse(self.path).path
+        if path in ("/", "/index.html"):
+            html = HTML.read_bytes() if HTML.exists() else b"<h1>Counsel</h1>"
+            self._send(200, html, "text/html; charset=utf-8")
+            return
+        if path == "/health":
+            self._send(200, b'{"ok":true,"organ":"counsel"}', "application/json")
+            return
+        if path == "/api/docket":
+            payload = {"health": pull(f"{A11OY}/healthz"), "feed": pull(f"{A11OY}/api/a11oy/v1/vert/legal/feed?limit=8"), "disclaimer": DISCLAIMER}
+            self._send(200, json.dumps(payload).encode(), "application/json")
+            return
+        if path == "/api/estate":
+            models = pull(f"{HF}/models?author=SZLHOLDINGS&limit=40")
+            spaces = pull(f"{HF}/spaces?author=SZLHOLDINGS&limit=40")
+            def ids(blob):
+                return [x.get("id") for x in blob if isinstance(x, dict)] if isinstance(blob, list) else blob
+            self._send(200, json.dumps({"models": ids(models), "spaces": ids(spaces)}).encode(), "application/json")
+            return
+        if path == "/api/allodial":
+            self._send(200, json.dumps(allodial_score()).encode(), "application/json")
+            return
+        self._send(404, b'{"error":"not found"}', "application/json")
+
+    def do_POST(self) -> None:  # noqa: N802
+        path = urlparse(self.path).path
+        data = read_json(self)
+        if path == "/api/brief":
+            prompt = str(data.get("prompt") or "").strip()
+            lock = bool(data.get("lock"))
+            prev = str(data.get("prev") or PREV["hash"])
+            if not prompt:
+                rec = mint("brief", "BLOCKED", "MEASURED", prev, prompt, None)
+                self._send(400, json.dumps({"text": "Empty submission.", "receipt": rec}).encode(), "application/json")
+                return
+            if not lock:
+                rec = mint("brief", "BLOCKED", "MEASURED", prev, prompt, None)
+                self._send(200, json.dumps({"text": "BLOCKED — Human Lock required (fail-closed).", "receipt": rec}).encode(), "application/json")
+                return
+            text, honesty = grok(prompt)
+            rec = mint("brief", "ALLOW", honesty, prev, prompt, MODEL if honesty != "UNAVAILABLE" else None)
+            self._send(200, json.dumps({"text": text, "receipt": rec}).encode(), "application/json")
+            return
+        self._send(404, b'{"error":"not found"}', "application/json")
 
 
-def run_ask(prompt, lock, prev):
-    if not (prompt or "").strip():
-        return "Empty submission.", "{}"
-    if not lock:
-        rec = mint("brief", "BLOCKED", "MEASURED", prev, prompt, None)
-        return "BLOCKED — Human Lock required (fail-closed).", json.dumps(rec, indent=2)
-    text, honesty = grok(prompt, DISCLAIMER + " You are Ayllu Counsel. Not a licensed attorney. No fabricated citations.")
-    rec = mint("brief", "ALLOW", honesty, prev, prompt, MODEL if honesty != "UNAVAILABLE" else None)
-    return text, json.dumps(rec, indent=2)
+def main() -> None:
+    port = int(os.environ.get("PORT", "7860"))
+    httpd = ThreadingHTTPServer(("0.0.0.0", port), Handler)
+    print(f"counsel listening 0.0.0.0:{port}", flush=True)
+    httpd.serve_forever()
 
-
-with gr.Blocks(title="Ayllu Counsel") as demo:
-    gr.Markdown("# Ayllu Counsel\nLegal Matter Command. Continuance of Counsel — not a deletion. " + DISCLAIMER)
-    with gr.Tab("Docket"):
-        out_d = gr.Code(label="Live a-11-oy.com legal vertical")
-        gr.Button("Scrape docket").click(show_docket, outputs=out_d)
-    with gr.Tab("Estate"):
-        out_e = gr.Code(label="Live SZLHOLDINGS Hub")
-        gr.Button("Scrape Hub").click(show_estate, outputs=out_e)
-    with gr.Tab("Infer"):
-        prompt = gr.Textbox(label="Matter / question", lines=6)
-        lock = gr.Checkbox(label="Human Lock", value=False)
-        prev = gr.Textbox(label="prev_hash", value=GENESIS)
-        ans = gr.Textbox(label="Completion", lines=12)
-        rec = gr.Code(label="Receipt")
-        gr.Button("Run grok-4.5").click(run_ask, inputs=[prompt, lock, prev], outputs=[ans, rec])
-
-demo.queue()
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860, show_error=True)
+    main()

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Ayllu Counsel</title>
+  <style>
+    :root { --bg:#07090d; --fg:#e8edf2; --muted:#8b95a3; --accent:#3af4c8; --danger:#e07a6a; --line:rgba(232,237,242,.12); --surf:#0d1520; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--fg); font: 16px/1.5 "Segoe UI", system-ui, sans-serif; }
+    header, main { max-width: 880px; margin: 0 auto; padding: 24px 20px; }
+    h1 { font-family: Georgia, serif; font-weight: 500; letter-spacing: -.03em; margin: 8px 0 0; }
+    .kicker { font: 11px/1 ui-monospace, Menlo, monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+    .panel { background: var(--surf); border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin-top: 16px; }
+    button { background: var(--accent); color: #04110d; border: 0; border-radius: 999px; height: 44px; padding: 0 18px; font-weight: 600; cursor: pointer; }
+    button.ghost { background: transparent; color: var(--fg); border: 1px solid var(--line); }
+    textarea, pre { width: 100%; background: #121c2a; color: var(--fg); border: 1px solid var(--line); border-radius: 12px; padding: 12px; font: 13px/1.45 ui-monospace, Menlo, monospace; }
+    textarea { min-height: 120px; }
+    label { display: flex; gap: 8px; align-items: center; margin: 12px 0; font-size: 14px; }
+    .muted { color: var(--muted); font-size: 14px; }
+    .danger { color: var(--danger); }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="kicker">SZL Holdings · Doctrine v11 · Conjecture 1</p>
+    <h1>Ayllu Counsel</h1>
+    <p class="muted">Legal Matter Command. Continuance of Counsel — not a deletion. Informational only. Not legal advice.</p>
+  </header>
+  <main>
+    <section class="panel">
+      <h2>Docket</h2>
+      <p class="muted">Live scrape of a-11-oy.com legal vertical. Fail closed when UNAVAILABLE.</p>
+      <button type="button" id="docket">Scrape docket</button>
+      <pre id="docket-out">idle</pre>
+    </section>
+    <section class="panel">
+      <h2>Estate</h2>
+      <button type="button" class="ghost" id="estate">Scrape Hub</button>
+      <pre id="estate-out">idle</pre>
+    </section>
+    <section class="panel">
+      <h2>Brief</h2>
+      <p class="muted">grok-4.5 only when a key is bound. Human Lock required. SHA3-256 UNSIGNED-honest receipt.</p>
+      <textarea id="prompt" placeholder="Matter / question"></textarea>
+      <label><input type="checkbox" id="lock"/> Human Lock</label>
+      <button type="button" id="run">Run</button>
+      <pre id="brief-out">idle</pre>
+    </section>
+    <section class="panel">
+      <h2>Allodial composite</h2>
+      <p class="muted">Experimental. Not locked-8. Not a land patent. MODELED.</p>
+      <pre id="allo-out">idle</pre>
+    </section>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    async function get(path) {
+      const r = await fetch(path);
+      const t = await r.text();
+      try { return JSON.stringify(JSON.parse(t), null, 2); } catch { return t; }
+    }
+    $("docket").onclick = async () => { $("docket-out").textContent = await get("/api/docket"); };
+    $("estate").onclick = async () => { $("estate-out").textContent = await get("/api/estate"); };
+    get("/api/allodial").then((t) => $("allo-out").textContent = t);
+    $("run").onclick = async () => {
+      const r = await fetch("/api/brief", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: $("prompt").value, lock: $("lock").checked })
+      });
+      $("brief-out").textContent = JSON.stringify(await r.json(), null, 2);
+    };
+  </script>
+</body>
+</html>
