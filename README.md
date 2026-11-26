@@ -45,3 +45,8 @@ Gradio was removed. It crashed the Space (`_simple_templates` / `audioop`). This
 Λ uniqueness is **Conjecture 1** and is never a theorem.
 
 Informational only. Does not constitute legal advice.
+
+
+## Governance provenance
+
+Governed asset of the SZLHOLDINGS estate (szl governance program, measured-truth doctrine); provenance receipts are published under github.com/szl-holdings governance repositories.
