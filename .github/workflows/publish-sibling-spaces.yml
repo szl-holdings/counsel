@@ -9,6 +9,7 @@ on:
         default: szl-sovereign-os,szl-real-estate
 jobs:
   publish:
+    environment: hf
     runs-on: ubuntu-latest
     permissions:
       contents: read
